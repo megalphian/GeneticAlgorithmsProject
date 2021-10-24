@@ -1,0 +1,1 @@
+A genetic algorithm approach to train a population of reactively controlled robots to operate in a cluttered dynamic environment
