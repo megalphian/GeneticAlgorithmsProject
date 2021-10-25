@@ -12,7 +12,9 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-show_animation = False
+import random
+
+show_animation = True
 
 
 def dwa_control(x, config, goal, ob):
@@ -21,30 +23,29 @@ def dwa_control(x, config, goal, ob):
     """
     dw = calc_dynamic_window(x, config)
 
-    u, trajectory = calc_control_and_trajectory(x, dw, config, goal, ob)
+    u, trajectory, cost = calc_control_and_trajectory(x, dw, config, goal, ob)
 
-    return u, trajectory
+    return u, trajectory, cost
 
 class EnvConfig:
     def __init__(self):
         self.env_range = [-1, 30]
         self.no_obstacles = 30
         self.ob_radius_range = [0,1]
-        self.ob = np.array([[-1, -1],
-                            [0, 2],
-                            [4.0, 1],
-                            [5.0, 0],
-                            [5.0, -1.5],
-                            [7.0, -0.75],
-                            [5.0, 0.8],
-                            [8.0, 1.5],
-                            [7.0, 1],
-                            [8.0, -0.5],
-                            [9.0, 0],
-                            [12.0, 1],
-                            [12.0, -0.25],
-                            [15.0, 0.25],
-                            [13.0, 0.5]
+        self.ob = np.array([[-1, -1, random.uniform(0, 0.5)],
+                            [0, 2, random.uniform(0, 0.5)],
+                            [4.0, 1, random.uniform(0, 0.5)],
+                            [5.0, 0, random.uniform(0, 0.5)],
+                            [5.0, -1.5, random.uniform(0, 0.5)],
+                            [7.0, -0.75, random.uniform(0, 0.5)],
+                            [5.0, 0.8, random.uniform(0, 0.5)],
+                            [8.0, 1.5, random.uniform(0, 0.5)],
+                            [7.0, 1, random.uniform(0, 0.5)],
+                            [8.0, -0.5, random.uniform(0, 0.5)],
+                            [9.0, 0, random.uniform(0, 0.5)],
+                            [12.0, 1, random.uniform(0, 0.5)],
+                            [12.0, -0.25, random.uniform(0, 0.5)],
+                            [13.0, 0.5, 0.25]
                             ])
 
 class Config:
@@ -55,23 +56,18 @@ class Config:
     def __init__(self):
         # Parameters to tune for GARobot
         # Also used to check if goal is reached in both types
-        self.to_goal_cost_gain = 25
-        self.speed_cost_gain = 1
-        self.obstacle_cost_gain = 5
+        self.to_goal_cost_gain = 3
+        self.speed_cost_gain = 0.25
+        self.obstacle_cost_gain = 1.5
         self.robot_radius = 0.25 # [m] for collision check
 
         # robot parameter
         self.max_speed = 1 # [m/s]
         self.min_speed = -0.5  # [m/s]
-        self.max_yaw_rate = 30 * math.pi / 180.0  # [rad/s]
         self.max_accel = 0.2  # [m/ss]
-        self.max_delta_yaw_rate = 30 * math.pi / 180.0  # [rad/ss]
         self.v_resolution = 0.01  # [m/s]
-        self.yaw_rate_resolution = 0.1 * math.pi / 180.0  # [rad/s]
         self.dt = 0.1  # [s] Time tick for motion prediction
         self.predict_time = 1.0  # [s]
-        
-        self.robot_stuck_flag_cons = 0.001  # constant to prevent robot stucked
 
 
 config = Config()
@@ -82,11 +78,10 @@ def motion(x, u, dt):
     motion model
     """
 
-    # x[2] += u[1] * dt
     x[0] += u[0] * dt
     x[1] += u[1] * dt
-    x[3] = u[0]
-    x[4] = u[1]
+    x[2] = u[0]
+    x[3] = u[1]
 
     return x
 
@@ -101,17 +96,16 @@ def calc_dynamic_window(x, config):
           config.min_speed, config.max_speed]
 
     # Dynamic window from motion model
-    Vd = [x[3] - config.max_accel * config.dt,
-          x[3] + config.max_accel * config.dt,
-          x[4] - config.max_accel * config.dt,
-          x[4] + config.max_accel * config.dt]
+    Vd = [x[2] - config.max_accel * config.dt,
+          x[2] + config.max_accel * config.dt,
+          x[3] - config.max_accel * config.dt,
+          x[3] + config.max_accel * config.dt]
 
     #  [v_min, v_max, yaw_rate_min, yaw_rate_max]
     dw = [max(Vs[0], Vd[0]), min(Vs[1], Vd[1]),
           max(Vs[2], Vd[2]), min(Vs[3], Vd[3])]
 
     return dw
-
 
 def predict_trajectory(x_init, v, y, config):
     """
@@ -156,28 +150,26 @@ def calc_control_and_trajectory(x, dw, config, goal, ob):
                 min_cost = final_cost
                 best_u = [v, y]
                 best_trajectory = trajectory
-                # if abs(best_u[0]) < config.robot_stuck_flag_cons \
-                #         and abs(x[3]) < config.robot_stuck_flag_cons:
-                #     # to ensure the robot do not get stuck in
-                #     # best v=0 m/s (in front of an obstacle) and
-                #     # best omega=0 rad/s (heading to the goal with
-                #     # angle difference of 0)
-                #     best_u[1] = -config.max_delta_yaw_rate
-    return best_u, best_trajectory
+    return best_u, best_trajectory, min_cost
 
 
 def calc_obstacle_cost(trajectory, ob, config):
     """
-    calc obstacle cost inf: collision
+    calc obstacle cost 
+    max_obs_cost: collision
     """
+    max_obs_cost = 10000
+
     ox = ob[:, 0]
     oy = ob[:, 1]
+    o_radius = ob[:, 2]
     dx = trajectory[:, 0] - ox[:, None]
     dy = trajectory[:, 1] - oy[:, None]
     r = np.hypot(dx, dy)
+    r = r - o_radius[:, None]
 
     if np.array(r <= config.robot_radius).any():
-        return float("Inf")
+        return max_obs_cost
 
     min_r = np.min(r)
     return 1.0 / min_r  # OK
@@ -199,6 +191,10 @@ def plot_robot(x, y, radius):  # pragma: no cover
     circle = plt.Circle((x, y), radius, color="b")
     plt.gcf().gca().add_artist(circle)
 
+def plot_obstacles(obs):  # pragma: no cover
+    for ob in obs:
+        circle = plt.Circle((ob[0], ob[1]), ob[2], color="k")
+        plt.gcf().gca().add_artist(circle)
 
 def main(sx=0.0, sy=0.0, gx=16.0, gy=0.0):
     print(__file__ + " start!!")
@@ -214,19 +210,34 @@ def main(sx=0.0, sy=0.0, gx=16.0, gy=0.0):
     trajectory = np.array(x)
     trajectory_1 = np.array(x_1)
     trajectory_2 = np.array(x_2)
+
+    total_cost = 0
+    total_cost_1 = 0
+    total_cost_2 = 0
+
+    stop_x = False
+    stop_x_1 = False
+    stop_x_2 = False
+
     ob = env_config.ob
     while True:
-        u, predicted_trajectory = dwa_control(x, config, goal, ob)
-        x = motion(x, u, config.dt)  # simulate robot
-        trajectory = np.vstack((trajectory, x))  # store state history
+        if not(stop_x):
+            u, predicted_trajectory, cost = dwa_control(x, config, goal, ob)
+            total_cost += cost
+            x = motion(x, u, config.dt)  # simulate robot
+            trajectory = np.vstack((trajectory, x))  # store state history
 
-        u_1, predicted_trajectory_1 = dwa_control(x_1, config, goal, ob)
-        x_1 = motion(x_1, u_1, config.dt)  # simulate robot
-        trajectory_1 = np.vstack((trajectory_1, x_1))  # store state history
+        if not(stop_x_1):
+            u_1, predicted_trajectory_1, cost_1 = dwa_control(x_1, config, goal, ob)
+            total_cost_1 += cost_1
+            x_1 = motion(x_1, u_1, config.dt)  # simulate robot
+            trajectory_1 = np.vstack((trajectory_1, x_1))  # store state history
 
-        u_2, predicted_trajectory_2 = dwa_control(x_2, config, goal, ob)
-        x_2 = motion(x_2, u_2, config.dt)  # simulate robot
-        trajectory_2 = np.vstack((trajectory_2, x_2))  # store state history
+        if not(stop_x_2):
+            u_2, predicted_trajectory_2, cost_2 = dwa_control(x_2, config, goal, ob)
+            total_cost_2 += cost_2
+            x_2 = motion(x_2, u_2, config.dt)  # simulate robot
+            trajectory_2 = np.vstack((trajectory_2, x_2))  # store state history
 
         if show_animation:
             plt.cla()
@@ -235,7 +246,7 @@ def main(sx=0.0, sy=0.0, gx=16.0, gy=0.0):
                 'key_release_event',
                 lambda event: [exit(0) if event.key == 'escape' else None])
             plt.plot(goal[0], goal[1], "xb")
-            plt.plot(ob[:, 0], ob[:, 1], "ok")
+            plot_obstacles(ob)
 
             plt.plot(x[0], x[1], "xr")
             plot_robot(x[0], x[1], config.robot_radius)
@@ -255,15 +266,25 @@ def main(sx=0.0, sy=0.0, gx=16.0, gy=0.0):
 
         # check reaching goal
         dist_to_goal = math.hypot(x[0] - goal[0], x[1] - goal[1])
-        if dist_to_goal <= config.robot_radius:
+        dist_to_goal_1 = math.hypot(x_1[0] - goal[0], x_1[1] - goal[1])
+        dist_to_goal_2 = math.hypot(x_2[0] - goal[0], x_2[1] - goal[1])
+
+        stop_x = dist_to_goal <= config.robot_radius
+        stop_x_1 = dist_to_goal_1 <= config.robot_radius
+        stop_x_2 = dist_to_goal_2 <= config.robot_radius
+
+        if stop_x and stop_x_1 and stop_x_2:
             print("Goal!!")
             break
 
+    print('Cost: ', total_cost)
+    print('Cost_1: ', total_cost_1)
+    print('Cost_2: ', total_cost_2)
     print("Done")
     
     plt.cla()
     plt.plot(goal[0], goal[1], "xb")
-    plt.plot(ob[:, 0], ob[:, 1], "ok")
+    plot_obstacles(ob)
     plt.axis("equal")
     plt.grid(True)
 
