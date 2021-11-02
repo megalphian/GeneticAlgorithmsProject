@@ -18,13 +18,13 @@ import time
 show_animation = False
 
 
-def dwa_control(x, config, goal, ob):
+def dwa_control(x, config, goal, obs):
     """
     Dynamic Window Approach control
     """
     dw = calc_dynamic_window(x, config)
 
-    u, trajectory, cost = calc_control_and_trajectory(x, dw, config, goal, ob)
+    u, trajectory, cost = calc_control_and_trajectory(x, dw, config, goal, obs)
 
     return u, trajectory, cost
 
@@ -48,7 +48,6 @@ class EnvConfig:
             temp_ob, ob_area = generate_random_obstacle(self.env_range[0] + 7.5, self.env_range[1] - 7.5, self.max_obs_radius)
             self.obs.append(temp_ob)
             obs_area += ob_area
-            print(obs_area)
         self.obs = np.array(self.obs)
 
 class Config:
@@ -59,11 +58,12 @@ class Config:
     def __init__(self):
         # Parameters to tune for GARobot
         # Also used to check if goal is reached in both types
-        self.to_goal_cost_gain = 3
+        self.to_goal_cost_gain = 5
         self.obstacle_cost_gain = 4
-        self.robot_radius = 0.05 # [m] for collision check
+        self.obstacle_sphere_of_influence = 0.8 # [m] for obstacle potential field
 
         # robot parameter
+        self.robot_radius = 0.05 # For collision check
         self.max_speed = 1 # [m/s]
         self.min_speed = -0.5  # [m/s]
         self.max_accel = 0.5  # [m/ss]
@@ -123,7 +123,7 @@ def predict_trajectory(x_init, v_x, v_y, config):
     return trajectory
 
 
-def calc_control_and_trajectory(x, dw, config, goal, ob):
+def calc_control_and_trajectory(x, dw, config, goal, obs):
     """
     calculation final input with dynamic window
     """
@@ -140,7 +140,7 @@ def calc_control_and_trajectory(x, dw, config, goal, ob):
             trajectory = predict_trajectory(x_init, v_x, v_y, config)
             # calc cost
             to_goal_cost = config.to_goal_cost_gain * calc_to_goal_cost(trajectory, goal)
-            ob_cost = config.obstacle_cost_gain * calc_obstacle_cost(trajectory, ob, config)
+            ob_cost = config.obstacle_cost_gain * calc_obstacle_cost(trajectory, obs, config)
 
             final_cost = to_goal_cost + ob_cost
 
@@ -152,26 +152,30 @@ def calc_control_and_trajectory(x, dw, config, goal, ob):
     return best_u, best_trajectory, min_cost
 
 
-def calc_obstacle_cost(trajectory, ob, config):
+def calc_obstacle_cost(trajectory, obs, config):
     """
     calc obstacle cost 
     max_obs_cost: collision
     """
-    max_obs_cost = float("inf")
-
-    ox = ob[:, 0]
-    oy = ob[:, 1]
-    o_radius = ob[:, 2]
+    max_obs_cost = 1000000
+    if(obs.size == 0):
+        return 0
+    
+    ox = obs[:, 0]
+    oy = obs[:, 1]
+    o_radius = obs[:, 2]
     dx = trajectory[:, 0] - ox[:, None]
     dy = trajectory[:, 1] - oy[:, None]
-    r = np.hypot(dx, dy)
-    r = r - o_radius[:, None]
-    min_r = np.min(r)
-
-    if min_r <= config.robot_radius:
-        return max_obs_cost
-
-    return 1/min_r
+    r = np.asarray(np.hypot(dx, dy))
+    min_r = np.min(r, axis=1) # Get min distance from each obstacle
+    total_cost = 0
+    for i in range(len(min_r)):
+        least_dist = (config.robot_radius + o_radius[i])
+        if min_r[i] <= least_dist:
+            return max_obs_cost # collision
+        if(min_r[i] <= config.obstacle_sphere_of_influence):
+            total_cost += 1/(min_r[i] - least_dist)
+    return total_cost
 
 
 def calc_to_goal_cost(trajectory, goal):
@@ -195,10 +199,10 @@ def plot_obstacles(obs):  # pragma: no cover
 
 def main(sx=0.0, sy=15.0, gx=30.0, gy=15.0):
     print(__file__ + " start!!")
-    # initial state [x(m), y(m), yaw(rad), v(m/s), omega(rad/s)]
-    x = np.array([sx, sy, 0, 0.0, 0.0])
-    x_1 = np.array([sx+0.5, sy-0.5, 0, 0.0, 0.0])
-    x_2 = np.array([sx+0.5, sy+0.5, 0, 0.0, 0.0])
+    # initial state [x(m), y(m), v_x(m/s), v_y(m/s)]
+    x = np.array([sx, sy, 0, 0.0])
+    x_1 = np.array([sx+0.5, sy-0.5, 0, 0.0])
+    x_2 = np.array([sx+0.5, sy+0.5, 0, 0.0])
 
     # goal position [x(m), y(m)]
     goal = np.array([gx, gy])
