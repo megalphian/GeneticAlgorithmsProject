@@ -5,12 +5,11 @@ class BaseRobotConfig:
     def __init__(self):
         # Common parameters for all robots
         self.robot_radius = 0.05 # For collision check
-        self.max_speed = 1 # [m/s]
+        self.max_speed = 0.5 # [m/s]
         self.min_speed = -0.5  # [m/s]
-        self.max_accel = 0.5  # [m/ss]
-        self.v_resolution = 0.01  # [m/s]
-        self.dt = 0.1  # [s] Time tick for motion prediction
-        self.predict_time = 0.1 # [s]
+        self.v_resolution = 0.075  # [m/s]
+        self.dt = 0.5  # [s] Time tick for motion prediction
+        self.predict_time = 3 # [s]
 
 class RobotGenome():
     
@@ -24,9 +23,9 @@ class RobotGenome():
     @staticmethod
     def create_random_genome():
         genome = RobotGenome()
-        genome.to_goal_cost_gain = random.randrange(0, 10)
-        genome.obstacle_cost_gain = random.randrange(0, 10)
-        genome.obstacle_sphere_of_influence = random.uniform(0.7, 2)
+        genome.to_goal_cost_gain = random.randrange(1, 5)
+        genome.obstacle_cost_gain = random.randrange(1, 5)
+        genome.obstacle_sphere_of_influence = random.uniform(0, 1)
         return genome
 
 class Robot(BaseRobotConfig):
@@ -39,11 +38,18 @@ class Robot(BaseRobotConfig):
 
         self.reset_robot()
 
+        self.fitness = 0
+
     def reset_robot(self):
+        self.reset_robot_state()
+        self.reset_fitness_params()
+
+    def reset_robot_state(self):
         self.trajectory = np.array(self.init_state)
         self.trajectory_cost = 0
         self.reached_goal = False
 
+    def reset_fitness_params(self):
         self.time_steps = 0
         self.no_collisions = 0
         self.distance_travelled = 0

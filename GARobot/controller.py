@@ -5,16 +5,13 @@ import matplotlib.pyplot as plt
 import math
 from plot_utils import plot_obstacles, plot_robot
 
-from env_config import EnvConfig
-
 import motion_planner as plan
 
-def run_generation(robots, goal, show_animation = True):
+def run_generation(robots, goal, env_config, show_animation = False):
     
     max_steps = 400 # Good value for this map
     time_limit_exceeded = False
 
-    env_config = EnvConfig()
     obs = env_config.obs
     i = 0
     
@@ -34,7 +31,7 @@ def run_generation(robots, goal, show_animation = True):
                     robot.trajectory = np.vstack((robot.trajectory, robot.state))
 
                     dist_to_goal = math.hypot(robot.state[0] - goal[0], robot.state[1] - goal[1])
-                    robot.reached_goal = dist_to_goal <= robot.robot_radius
+                    robot.reached_goal = dist_to_goal <= 2*robot.robot_radius
         
         if show_animation:
             plt.cla()
@@ -80,11 +77,13 @@ def run_generation(robots, goal, show_animation = True):
 
     i = 1
     for robot in robots:
-        print('Robot', i, ': ')
-        print('Goal gain: ', robot.genome.to_goal_cost_gain)
-        print('Obstacle gain: ', robot.genome.obstacle_cost_gain)
-        print('Obstacle Sphere of Influence: ', robot.genome.obstacle_sphere_of_influence)
-        print('Cost: ', robot.trajectory_cost)
+
+        if(robot.trajectory_cost < float('inf')):
+            print('Robot', i)
+            # print('Goal gain: ', robot.genome.to_goal_cost_gain)
+            # print('Obstacle gain: ', robot.genome.obstacle_cost_gain)
+            # print('Obstacle Sphere of Influence: ', robot.genome.obstacle_sphere_of_influence)
+            # print('Cost: ', robot.trajectory_cost)
 
         plt.plot(robot.state[0], robot.state[1], "xr")
         plt.plot(robot.trajectory[:, 0], robot.trajectory[:, 1], "-r")

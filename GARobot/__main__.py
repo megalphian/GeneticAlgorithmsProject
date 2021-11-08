@@ -2,23 +2,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 from robot_factory import Robot
 
-from controller import run_generation
+from genetic_alg import garobot, GARobotConfig
 
 show_animation = False
 
 def main():
+
+    # Define goal point
     gx=30.0 
     gy=15.0
-    
+
     # goal position [x(m), y(m)]
     goal = np.array([gx, gy])
-    robots = []
-    pop_size = 20
+    pop_size = 30
 
-    for i in range(pop_size):
-        robots.append(Robot.create_robot())
+    config = GARobotConfig()
 
-    run_generation(robots, goal)
+    garobot(pop_size, goal, config)
+    
     plt.show()
 
 

@@ -22,17 +22,17 @@ def calc_dynamic_window(x, config):
     """
 
     # Dynamic window from robot specification
-    Vs = [config.min_speed, config.max_speed,
+    dw = [config.min_speed, config.max_speed,
           config.min_speed, config.max_speed]
 
-    # Dynamic window from motion model
-    Vd = [x[2] - config.max_accel * config.dt,
-          x[2] + config.max_accel * config.dt,
-          x[3] - config.max_accel * config.dt,
-          x[3] + config.max_accel * config.dt]
+    # # Dynamic window from motion model
+    # Vd = [x[2] - config.max_accel * config.dt,
+    #       x[2] + config.max_accel * config.dt,
+    #       x[3] - config.max_accel * config.dt,
+    #       x[3] + config.max_accel * config.dt]
 
-    dw = [max(Vs[0], Vd[0]), min(Vs[1], Vd[1]),
-          max(Vs[2], Vd[2]), min(Vs[3], Vd[3])]
+    # dw = [max(Vs[0], Vd[0]), min(Vs[1], Vd[1]),
+    #       max(Vs[2], Vd[2]), min(Vs[3], Vd[3])]
 
     return dw
 
@@ -71,7 +71,6 @@ def calc_control_and_trajectory(x, dw, config, goal, obs):
             # calc cost
             to_goal_cost = config.genome.to_goal_cost_gain * calc_to_goal_cost(trajectory, goal)
             ob_cost, collisions = calc_obstacle_cost(trajectory, obs, config)
-            ob_cost = config.genome.obstacle_cost_gain * ob_cost
 
             final_cost = to_goal_cost + ob_cost
 
@@ -81,6 +80,9 @@ def calc_control_and_trajectory(x, dw, config, goal, obs):
                 best_u = [v_x, v_y]
                 best_trajectory = trajectory
                 min_collisions = collisions
+    
+    # Megnath: See if there is a way to overcome any local minima
+
     return best_u, best_trajectory, min_cost, min_collisions
 
 def motion(x, u, dt):
@@ -116,11 +118,11 @@ def calc_obstacle_cost(trajectory, obs, config):
     total_cost = 0
     for i in range(len(min_r)):
         least_dist = (config.robot_radius + o_radius[i])
-        if min_r[i] <= least_dist:
+        if min_r[i] < least_dist:
             total_cost += max_obs_cost # collision
             collisions += 1
         if(min_r[i] <= config.genome.obstacle_sphere_of_influence):
-            total_cost += 1/(min_r[i] - least_dist)
+            total_cost += config.genome.obstacle_cost_gain * 1/(min_r[i] - least_dist)
     return (total_cost, collisions)
 
 def calc_to_goal_cost(trajectory, goal):
