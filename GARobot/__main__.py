@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from robot_factory import Robot
 
-from motion_planner import run_generation
+from controller import run_generation
 
 show_animation = False
 
@@ -13,8 +13,9 @@ def main():
     # goal position [x(m), y(m)]
     goal = np.array([gx, gy])
     robots = []
+    pop_size = 20
 
-    for i in range(5):
+    for i in range(pop_size):
         robots.append(Robot.create_robot())
 
     run_generation(robots, goal)

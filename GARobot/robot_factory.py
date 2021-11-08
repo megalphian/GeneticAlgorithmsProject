@@ -37,9 +37,16 @@ class Robot(BaseRobotConfig):
         self.state = init_state
         super(Robot, self).__init__()
 
-        self.trajectory = np.array(init_state)
+        self.reset_robot()
+
+    def reset_robot(self):
+        self.trajectory = np.array(self.init_state)
         self.trajectory_cost = 0
-        self.is_running = True
+        self.reached_goal = False
+
+        self.time_steps = 0
+        self.no_collisions = 0
+        self.distance_travelled = 0
     
     @staticmethod
     def create_robot(sx=0.0, sy=15.0):
@@ -47,3 +54,8 @@ class Robot(BaseRobotConfig):
         state = np.array([sx, sy, 0, 0.0])
         genome = RobotGenome.create_random_genome()
         return Robot(genome, state)
+    
+    def update_fitness_params(self, u, no_collisions):
+        self.distance_travelled += (np.sqrt(u[0]**2 + u[1]**2) / self.dt)
+        self.no_collisions += no_collisions
+        self.time_steps += 1
