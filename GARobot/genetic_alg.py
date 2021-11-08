@@ -99,5 +99,8 @@ def garobot(pop_size, goal, config):
         selected = reproduce(robots, int(pop_size/2))
         crossover(robots)
         mutate(robots)
+
+        for robot in robots:
+            robot.reset_fitness_params()
     
     print('GARobot done!')

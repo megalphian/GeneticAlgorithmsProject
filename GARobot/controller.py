@@ -9,7 +9,10 @@ import motion_planner as plan
 
 def run_generation(robots, goal, env_config, show_animation = False):
     
-    max_steps = 400 # Good value for this map
+    for robot in robots:
+        robot.reset_robot_state()
+
+    max_steps = 250 # Good value for this map
     time_limit_exceeded = False
 
     obs = env_config.obs
