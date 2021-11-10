@@ -33,7 +33,7 @@ class Robot(BaseRobotConfig):
     def __init__(self, genome, init_state):
         self.genome = genome
         self.init_state = init_state
-        self.state = init_state
+        self.state = init_state.copy()
         super(Robot, self).__init__()
 
         self.reset_robot()
@@ -45,6 +45,7 @@ class Robot(BaseRobotConfig):
         self.reset_fitness_params()
 
     def reset_robot_state(self):
+        self.state = self.init_state.copy()
         self.trajectory = np.array(self.init_state)
         self.trajectory_cost = 0
         self.reached_goal = False
@@ -53,9 +54,10 @@ class Robot(BaseRobotConfig):
         self.time_steps = 0
         self.no_collisions = 0
         self.distance_travelled = 0
+        self.distance_from_goal = 0
     
     @staticmethod
-    def create_robot(sx=0.0, sy=15.0):
+    def create_robot(sx, sy):
         # initial state [x(m), y(m), v_x(m/s), v_y(m/s)]
         state = np.array([sx, sy, 0, 0.0])
         genome = RobotGenome.create_random_genome()

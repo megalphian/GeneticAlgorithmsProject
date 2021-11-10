@@ -12,7 +12,7 @@ def run_generation(robots, goal, env_config, show_animation = False):
     for robot in robots:
         robot.reset_robot_state()
 
-    max_steps = 250 # Good value for this map
+    max_steps = 100 # Good value for this map
     time_limit_exceeded = False
 
     obs = env_config.obs
@@ -48,7 +48,6 @@ def run_generation(robots, goal, env_config, show_animation = False):
             for robot in robots:
                 plt.plot(robot.state[0], robot.state[1], "xr")
                 plot_robot(robot.state[0], robot.state[1], robot.robot_radius)
-                plt.plot(predicted_trajectory[:, 0], predicted_trajectory[:, 1], "-g")
 
             plt.xlim(env_config.env_range)
             plt.axis("equal")
@@ -69,6 +68,9 @@ def run_generation(robots, goal, env_config, show_animation = False):
         for robot in robots:
             if(not(robot.reached_goal)):
                 robot.trajectory_cost = float("inf")
+                
+                dist_from_goal = math.hypot(robot.state[0] - goal[0], robot.state[1] - goal[1])
+                robot.distance_from_goal += dist_from_goal
 
     plt.cla()
     plt.plot(goal[0], goal[1], "xb")

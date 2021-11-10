@@ -6,6 +6,8 @@ from controller import run_generation
 from env_config import EnvConfig
 from robot_factory import Robot
 
+goal_dist_gain = 100
+
 class RobotType:
     
     # Robot profiles and corresponding objective gains
@@ -17,7 +19,7 @@ class RobotType:
 class GARobotConfig:
     def __init__(self):
         self.num_gens = 1
-        self.runs_per_gen = 1
+        self.runs_per_gen = 3
         self.robot_type_gains = RobotType.SAFE
 
 def evaluate(robots, robot_type_gains):
@@ -28,7 +30,8 @@ def evaluate(robots, robot_type_gains):
     for robot in robots:
         raw_objective = robot.no_collisions * robot_type_gains[0] + \
                               robot.time_steps * robot_type_gains[1] + \
-                              robot.distance_travelled * robot_type_gains[2]
+                              robot.distance_travelled * robot_type_gains[2] + \
+                              robot.distance_from_goal * goal_dist_gain
         robot_obj_lookup[robot] = raw_objective
         total_obj_val += raw_objective
         if(highest_obj_val < raw_objective):
@@ -79,14 +82,14 @@ def garobot(pop_size, goal, config):
     gen_obj_vals = []
 
     for i in range(pop_size):
-        robots.append(Robot.create_robot())
+        robots.append(Robot.create_robot(0, 5))
 
     for i in range(config.num_gens):
         print('Generation',i+1)
         for j in range(config.runs_per_gen):
             print('Run',j+1)
             # Run the motions for the generation
-            run_generation(robots, goal, env_config, show_animation=False)
+            run_generation(robots, goal, env_config, show_animation=True)
 
             # Recreate the environment with new obstacles
             env_config = EnvConfig()

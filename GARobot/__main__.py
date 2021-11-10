@@ -9,8 +9,8 @@ show_animation = False
 def main():
 
     # Define goal point
-    gx=30.0 
-    gy=15.0
+    gx=10.0 
+    gy=5.0
 
     # goal position [x(m), y(m)]
     goal = np.array([gx, gy])
