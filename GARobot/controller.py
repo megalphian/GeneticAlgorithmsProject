@@ -80,19 +80,19 @@ def run_generation(robots, goal, env_config, show_animation = False):
     plt.axis("equal")
     plt.grid(True)
 
-    i = 1
-    for robot in robots:
+    # i = 1
+    # for robot in robots:
 
-        if(robot.trajectory_cost < float('inf')):
-            print('Robot', i)
-            # print('Goal gain: ', robot.genome.to_goal_cost_gain)
-            # print('Obstacle gain: ', robot.genome.obstacle_cost_gain)
-            # print('Obstacle Sphere of Influence: ', robot.genome.obstacle_sphere_of_influence)
-            # print('Cost: ', robot.trajectory_cost)
+    #     # if(robot.trajectory_cost < float('inf')):
+    #     #     print('Robot', i)
+    #     #     print('Goal gain: ', robot.genome.to_goal_cost_gain)
+    #     #     print('Obstacle gain: ', robot.genome.obstacle_cost_gain)
+    #     #     print('Obstacle Sphere of Influence: ', robot.genome.obstacle_sphere_of_influence)
+    #     #     print('Cost: ', robot.trajectory_cost)
 
-        plt.plot(robot.state[0], robot.state[1], "xr")
-        plt.plot(robot.trajectory[:, 0], robot.trajectory[:, 1], "-r")
+    #     plt.plot(robot.state[0], robot.state[1], "xr")
+    #     plt.plot(robot.trajectory[:, 0], robot.trajectory[:, 1], "-r")
 
-        i += 1
+    #     i += 1
 
     print("Done")

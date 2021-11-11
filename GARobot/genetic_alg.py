@@ -17,7 +17,7 @@ class RobotType:
 
 class GARobotConfig:
     def __init__(self):
-        self.num_gens = 1
+        self.num_gens = 3
         self.runs_per_gen = 3
         self.robot_type_gains = RobotType.SAFE
 
@@ -115,7 +115,7 @@ def garobot(pop_size, goal, config):
         for j in range(config.runs_per_gen):
             print('Run',j+1)
             # Run the motions for the generation
-            run_generation(robots, goal, env_config, show_animation=True)
+            run_generation(robots, goal, env_config, show_animation=False)
 
             # Recreate the environment with new obstacles
             env_config = EnvConfig()
@@ -135,3 +135,5 @@ def garobot(pop_size, goal, config):
         robots = crossover_robots
     
     print('GARobot done!')
+
+    return robots, env_config
