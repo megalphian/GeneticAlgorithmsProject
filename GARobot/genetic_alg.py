@@ -1,10 +1,9 @@
-import numpy as np
-from numpy.lib.function_base import select
+import math
 import random
 
 from controller import run_generation
 from env_config import EnvConfig
-from robot_factory import Robot
+from robot_factory import Robot, RobotGenome
 
 goal_dist_gain = 100
 
@@ -42,9 +41,16 @@ def evaluate(robots, robot_type_gains):
 
     return total_obj_val
 
-def reproduce(robots, no_reproduce):
+def get_no_reproduce(m):
+    # solve the quadratic equation to find the selection number
+    n = math.ceil((1 + math.sqrt(1+(8*m)))/2)
+    return n
+
+def reproduce(robots):
     # # Idk how to use this from the paper. Just gonna pick the best pop
     # selection_prob = 0.6 
+
+    no_reproduce = get_no_reproduce(len(robots))
 
     fitness_list = []
     selected = []
@@ -64,13 +70,32 @@ def reproduce(robots, no_reproduce):
     
     return selected
 
-def crossover(robots):
-    crossover_prob = 0.6
-    pass
+def crossover(robots, pop_size):
+    # # Idk how to use this from the paper. Just gonna pick the best pop
+    # crossover_prob = 0.6
+
+    crossover_bots = []
+
+    for i in range(len(robots)-1):
+        for j in range(i, len(robots)):
+            init_state = robots[i].init_state.copy()
+            genome = RobotGenome.crossover_genomes(robots[i].genome, robots[j].genome)
+            new_robot = Robot(genome, init_state)
+
+            crossover_bots.append(new_robot)
+
+            if(len(crossover_bots) == pop_size):
+                break
+    
+    return crossover_bots
 
 def mutate(robots):
     mutation_prob = 0.5
-    pass
+    mutation_delta = 0.5
+
+    for robot in robots:
+        if random.random() < mutation_prob:
+            robot.genome.mutate(mutation_delta)
 
 def garobot(pop_size, goal, config):
     
@@ -85,6 +110,7 @@ def garobot(pop_size, goal, config):
         robots.append(Robot.create_robot(0, 5))
 
     for i in range(config.num_gens):
+        
         print('Generation',i+1)
         for j in range(config.runs_per_gen):
             print('Run',j+1)
@@ -99,11 +125,13 @@ def garobot(pop_size, goal, config):
         gen_obj_vals.append(total_obj_val)
 
         # Apply the GA parameters to the robots
-        selected = reproduce(robots, int(pop_size/2))
-        crossover(robots)
-        mutate(robots)
+        selected = reproduce(robots)
+        crossover_robots = crossover(selected, pop_size)
+        mutate(crossover_robots)
 
         for robot in robots:
             robot.reset_fitness_params()
+        
+        robots = crossover_robots
     
     print('GARobot done!')

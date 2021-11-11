@@ -1,6 +1,12 @@
 import numpy as np
 import random
 
+def crossover_genome_values(g_val_1, g_val_2):
+    randn1p1 = 1 if random.random() < 0.5 else -1
+    crossover_val = ((g_val_1 + g_val_2)/2) + (abs(g_val_1 - g_val_2) * randn1p1)
+
+    return crossover_val
+
 class BaseRobotConfig:
     def __init__(self):
         # Common parameters for all robots
@@ -11,7 +17,7 @@ class BaseRobotConfig:
         self.dt = 0.5  # [s] Time tick for motion prediction
         self.predict_time = 3 # [s]
 
-class RobotGenome():
+class RobotGenome:
     
     def __init__(self):
         # Parameters to tune for GARobot
@@ -19,6 +25,16 @@ class RobotGenome():
         self.to_goal_cost_gain = 2
         self.obstacle_cost_gain = 2
         self.obstacle_sphere_of_influence = 0.8 # [m] for obstacle potential field
+
+    def mutate(self, delta):
+        randn1p1 = 1 if random.random() < 0.5 else -1
+        self.to_goal_cost_gain += self.to_goal_cost_gain * delta * randn1p1
+        
+        randn1p1 = 1 if random.random() < 0.5 else -1
+        self.obstacle_cost_gain += self.obstacle_cost_gain * delta * randn1p1
+        
+        randn1p1 = 1 if random.random() < 0.5 else -1
+        self.obstacle_sphere_of_influence += self.obstacle_sphere_of_influence * delta * randn1p1
     
     @staticmethod
     def create_random_genome():
@@ -27,6 +43,16 @@ class RobotGenome():
         genome.obstacle_cost_gain = random.randrange(1, 5)
         genome.obstacle_sphere_of_influence = random.uniform(0, 1)
         return genome
+    
+    @staticmethod
+    def crossover_genomes(genome_1, genome_2):
+        new_genome = RobotGenome()
+
+        new_genome.to_goal_cost_gain = crossover_genome_values(genome_1.to_goal_cost_gain, genome_2.to_goal_cost_gain)
+        new_genome.obstacle_cost_gain = crossover_genome_values(genome_1.obstacle_cost_gain, genome_2.obstacle_cost_gain)
+        new_genome.obstacle_sphere_of_influence = crossover_genome_values(genome_1.obstacle_sphere_of_influence, genome_2.obstacle_sphere_of_influence)
+
+        return new_genome
 
 class Robot(BaseRobotConfig):
 
