@@ -9,15 +9,15 @@ def generate_random_obstacle(env_min, env_max, max_rad):
     return ([x_pos, y_pos, rad], area)
 
 class EnvConfig:
-    def __init__(self, clutter_pct = 25):
+    def __init__(self, clutter_pct=25):
         self.env_range = [0, 10]
         self.no_obstacles = 0
-        self.max_obs_radius = 0.5
+        self.max_obs_radius = 0.25
         self.obs = []
-        area = (8) ** 2
+        area = (9) ** 2
         obs_area = 0
         while obs_area < (area * (clutter_pct/100)):
-            temp_ob, ob_area = generate_random_obstacle(self.env_range[0] + 1.5, self.env_range[1] - 1.5, self.max_obs_radius)
+            temp_ob, ob_area = generate_random_obstacle(self.env_range[0] + 0.5, self.env_range[1] - 0.5, self.max_obs_radius)
             self.obs.append(temp_ob)
             obs_area += ob_area
         self.obs = np.array(self.obs)

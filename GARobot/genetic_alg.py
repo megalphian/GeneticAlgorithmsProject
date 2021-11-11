@@ -5,21 +5,21 @@ from controller import run_generation
 from env_config import EnvConfig
 from robot_factory import Robot, RobotGenome
 
-goal_dist_gain = 100
+goal_dist_gain = 1000
 
 class RobotType:
     
     # Robot profiles and corresponding objective gains
     # [Collision, Time, Distance]
     SAFE = [100, 1, 1]
-    DIRECT = [10, 10, 1]
-    FAST = [10, 1, 10]
+    FAST = [10, 10, 1]
+    DIRECT = [10, 1, 10]
 
 class GARobotConfig:
     def __init__(self):
-        self.num_gens = 3
-        self.runs_per_gen = 3
-        self.robot_type_gains = RobotType.SAFE
+        self.num_gens = 10
+        self.runs_per_gen = 1
+        self.robot_type_gains = RobotType.FAST
 
 def evaluate(robots, robot_type_gains):
     robot_obj_lookup = dict()
@@ -28,9 +28,9 @@ def evaluate(robots, robot_type_gains):
 
     for robot in robots:
         raw_objective = robot.no_collisions * robot_type_gains[0] + \
-                              robot.time_steps * robot_type_gains[1] + \
-                              robot.distance_travelled * robot_type_gains[2] + \
-                              robot.distance_from_goal * goal_dist_gain
+                            robot.time_steps * robot_type_gains[1] + \
+                            robot.distance_travelled * robot_type_gains[2] + \
+                            robot.distance_from_goal * goal_dist_gain
         robot_obj_lookup[robot] = raw_objective
         total_obj_val += raw_objective
         if(highest_obj_val < raw_objective):
@@ -68,6 +68,8 @@ def reproduce(robots):
         
         selected.append(robot)
     
+    selected.sort(key=lambda x: x.fitness, reverse=True)
+
     return selected
 
 def crossover(robots, pop_size):
@@ -75,6 +77,8 @@ def crossover(robots, pop_size):
     # crossover_prob = 0.6
 
     crossover_bots = []
+
+    # Sort the input robots by fitness
 
     for i in range(len(robots)-1):
         for j in range(i, len(robots)):
@@ -86,21 +90,21 @@ def crossover(robots, pop_size):
 
             if(len(crossover_bots) == pop_size):
                 break
-    
+        else:
+            continue
+        break
+
     return crossover_bots
 
 def mutate(robots):
     mutation_prob = 0.5
-    mutation_delta = 0.5
+    mutation_delta = 0.2
 
     for robot in robots:
-        if random.random() < mutation_prob:
+        if random.random() <= mutation_prob:
             robot.genome.mutate(mutation_delta)
 
 def garobot(pop_size, goal, config):
-    
-    # Build environment
-    env_config = EnvConfig()
 
     # Build initial population
     robots = []
@@ -109,16 +113,26 @@ def garobot(pop_size, goal, config):
     for i in range(pop_size):
         robots.append(Robot.create_robot(0, 5))
 
+    crossover_robots = robots
+
+    # FIXED
+    # Build environment with new obstacles
+    env_config = EnvConfig()
+
     for i in range(config.num_gens):
         
+        robots = crossover_robots
+
         print('Generation',i+1)
         for j in range(config.runs_per_gen):
             print('Run',j+1)
+
+            # # VARIED
+            # # Build environment with new obstacles
+            # env_config = EnvConfig()
+
             # Run the motions for the generation
             run_generation(robots, goal, env_config, show_animation=False)
-
-            # Recreate the environment with new obstacles
-            env_config = EnvConfig()
 
         # Evaluate the objective value of the population and record
         total_obj_val = evaluate(robots, config.robot_type_gains)
@@ -129,10 +143,10 @@ def garobot(pop_size, goal, config):
         crossover_robots = crossover(selected, pop_size)
         mutate(crossover_robots)
 
+        print('Gen Cost:', total_obj_val)
+
         for robot in robots:
             robot.reset_fitness_params()
-        
-        robots = crossover_robots
     
     print('GARobot done!')
 

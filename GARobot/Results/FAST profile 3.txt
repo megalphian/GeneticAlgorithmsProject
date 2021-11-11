@@ -1,0 +1,65 @@
+❯ python GARobot
+Generation 1
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 7
+Done
+Gen Cost: 208620.14945573316
+Generation 2
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 18
+Done
+Gen Cost: 245283.57274276923
+Generation 3
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 20
+Done
+Gen Cost: 284249.1696702773
+Generation 4
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 20
+Done
+Gen Cost: 309837.1166072459
+Generation 5
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 25
+Done
+Gen Cost: 60556.69482319027
+Generation 6
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 21
+Done
+Gen Cost: 275945.1749298804
+Generation 7
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 17
+Done
+Gen Cost: 414274.26816813217
+Generation 8
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Gen Cost: 257593.42432205664
+Generation 9
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 20
+Done
+Gen Cost: 354244.6905303258
+Generation 10
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 21
+Done
+Gen Cost: 344091.37897631805
+GARobot done!
+^CTraceback (most recent call last):
+  File "/Users/megnath/miniforge3/lib/python3.9/site-packages/matplotlib/backends/backend_macosx.py", line 87, in close
+    def close(self):

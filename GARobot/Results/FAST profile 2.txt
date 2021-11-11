@@ -1,0 +1,62 @@
+❯ python GARobot
+Generation 1
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 8
+Done
+Gen Cost: 241351.0853032197
+Generation 2
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Gen Cost: 155337.3748193994
+Generation 3
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Gen Cost: 61665.88741781017
+Generation 4
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Gen Cost: 138064.6748390459
+Generation 5
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 25
+Done
+Gen Cost: 55261.97831898024
+Generation 6
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Gen Cost: 247678.8078492104
+Generation 7
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 28
+Done
+Gen Cost: 66981.46274409916
+Generation 8
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 27
+Done
+Gen Cost: 150140.5467105877
+Generation 9
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 29
+Done
+Gen Cost: 23179.417069063747
+Generation 10
+Run 1
+Goal!!
+Robots reaching goal: 30
+Done
+Gen Cost: 19646.004040262695
+GARobot done!

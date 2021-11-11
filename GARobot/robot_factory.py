@@ -2,7 +2,7 @@ import numpy as np
 import random
 
 def crossover_genome_values(g_val_1, g_val_2):
-    randn1p1 = 1 if random.random() < 0.5 else -1
+    randn1p1 = 1 if random.random() <= 0.5 else -1
     crossover_val = ((g_val_1 + g_val_2)/2) + (abs(g_val_1 - g_val_2) * randn1p1)
 
     return crossover_val
@@ -27,13 +27,13 @@ class RobotGenome:
         self.obstacle_sphere_of_influence = 0.8 # [m] for obstacle potential field
 
     def mutate(self, delta):
-        randn1p1 = 1 if random.random() < 0.5 else -1
+        randn1p1 = 1 if random.random() <= 0.5 else -1
         self.to_goal_cost_gain += self.to_goal_cost_gain * delta * randn1p1
         
-        randn1p1 = 1 if random.random() < 0.5 else -1
+        randn1p1 = 1 if random.random() <= 0.5 else -1
         self.obstacle_cost_gain += self.obstacle_cost_gain * delta * randn1p1
         
-        randn1p1 = 1 if random.random() < 0.5 else -1
+        randn1p1 = 1 if random.random() <= 0.5 else -1
         self.obstacle_sphere_of_influence += self.obstacle_sphere_of_influence * delta * randn1p1
     
     @staticmethod
