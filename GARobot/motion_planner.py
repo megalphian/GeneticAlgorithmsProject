@@ -103,7 +103,7 @@ def calc_obstacle_cost(trajectory, obs, config):
     max_obs_cost: collision
     Returns: (cost, collisions)
     """
-    max_obs_cost = 1000000
+    max_obs_cost = float('inf')
     collisions = 0
     if(obs.size == 0):
         return (0, 0)
@@ -113,17 +113,18 @@ def calc_obstacle_cost(trajectory, obs, config):
     o_radius = obs[:, 2]
     dx = trajectory[:, 0] - ox[:, None]
     dy = trajectory[:, 1] - oy[:, None]
-    r = np.asarray(np.hypot(dx, dy))
-    min_r = np.min(r, axis=1) # Get min distance from each obstacle
-    total_cost = 0
-    for i in range(len(min_r)):
-        least_dist = (config.robot_radius + o_radius[i])
-        if min_r[i] < least_dist:
-            total_cost += max_obs_cost # collision
-            collisions += 1
-        if(min_r[i] <= config.genome.obstacle_sphere_of_influence):
-            total_cost += config.genome.obstacle_cost_gain * 1/(min_r[i] - least_dist)
-    return (total_cost, collisions)
+    r = np.asarray(np.hypot(dx, dy)) - o_radius[:, None]
+    min_r = np.min(r, axis=1)
+    i = np.argmin(min_r) # Get the min distance of a trajectory from each obstacle
+
+    cost = 0
+    if min_r[i] < config.robot_radius:
+        cost = max_obs_cost # collision
+        collisions = 100
+    elif(min_r[i] <= (config.genome.obstacle_sphere_of_influence + config.robot_radius)):
+        collisions = 1
+        cost = config.genome.obstacle_cost_gain * 1/(min_r[i])
+    return (cost, collisions)
 
 def calc_to_goal_cost(trajectory, goal):
     """
