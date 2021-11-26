@@ -9,7 +9,7 @@ def generate_random_obstacle(env_min, env_max, max_rad):
     return ([x_pos, y_pos, rad], area)
 
 class EnvConfig:
-    def __init__(self, clutter_pct=25):
+    def __init__(self, clutter_pct=10):
         self.env_range = [0, 10]
         self.no_obstacles = 0
         self.max_obs_radius = 0.25

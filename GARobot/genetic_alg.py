@@ -15,7 +15,7 @@ class RobotType:
 
 class GARobotConfig:
     def __init__(self):
-        self.num_gens = 50
+        self.num_gens = 10
         self.runs_per_gen = 3
         self.robot_type_gains = RobotType.SAFE
 
@@ -102,7 +102,7 @@ def mutate(robots):
         if random.random() < mutation_prob:
             robot.genome.mutate(mutation_delta)
 
-def garobot(pop_size, start, goal, config, anim_ax, fixed=True, show_animation=False):
+def garobot(pop_size, start, goal, config, anim_ax, fixed=True, show_animation=True):
 
     # Build initial population
     robots = []

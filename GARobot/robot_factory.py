@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-def crossover_genome_values(g_val_1, g_val_2, default_val=0.5):
+def crossover_genome_values(g_val_1, g_val_2, default_val=0.1):
     randn1p1 = 1 if random.random() <= 0.5 else -1
     crossover_val = ((g_val_1 + g_val_2)/2) + (abs(g_val_1 - g_val_2) * randn1p1)
 
@@ -42,9 +42,9 @@ class RobotGenome:
     @staticmethod
     def create_random_genome():
         genome = RobotGenome()
-        genome.to_goal_cost_gain = random.uniform(1, 10)
-        genome.obstacle_cost_gain = random.uniform(1, 10)
-        genome.obstacle_sphere_of_influence = random.uniform(0, 3)
+        genome.to_goal_cost_gain = random.uniform(0.1, 10)
+        genome.obstacle_cost_gain = random.uniform(0.1, 10)
+        genome.obstacle_sphere_of_influence = random.uniform(0, 1)
         return genome
     
     @staticmethod
