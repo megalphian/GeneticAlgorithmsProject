@@ -1,0 +1,281 @@
+Generation 1
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 9
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 9
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 9
+Done
+Gen Cost: 693487.5190715455
+Generation 2
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Gen Cost: 179467.92585929952
+Generation 3
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Gen Cost: 540020.9727281763
+Generation 4
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 27
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 27
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 27
+Done
+Gen Cost: 347295.2351133032
+Generation 5
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Gen Cost: 1044710.8920429569
+Generation 6
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 20
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 20
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 20
+Done
+Gen Cost: 1303574.0089103857
+Generation 7
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Gen Cost: 1044701.5824742436
+Generation 8
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 26
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 26
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 26
+Done
+Gen Cost: 526801.4177411221
+Generation 9
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Gen Cost: 785731.6061387162
+Generation 10
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Gen Cost: 915230.6970543227
+Generation 11
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Gen Cost: 915239.1410226447
+Generation 12
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Gen Cost: 1044691.6616774629
+Generation 13
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Gen Cost: 915221.2590260984
+Generation 14
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Gen Cost: 1044662.0695197285
+Generation 15
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Gen Cost: 915190.6900118305
+Generation 16
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 21
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 21
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 21
+Done
+Gen Cost: 1174170.1673123958
+Generation 17
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 21
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 21
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 21
+Done
+Gen Cost: 1174134.656434967
+Generation 18
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 23
+Done
+Gen Cost: 915210.0881400323
+Generation 19
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 22
+Done
+Gen Cost: 1044626.7455139381
+Generation 20
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 24
+Done
+Gen Cost: 785733.2479248074
+GARobot done!
