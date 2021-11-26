@@ -1,21 +1,24 @@
 import numpy as np
 import random
 
-def crossover_genome_values(g_val_1, g_val_2):
+def crossover_genome_values(g_val_1, g_val_2, default_val=0.5):
     randn1p1 = 1 if random.random() <= 0.5 else -1
     crossover_val = ((g_val_1 + g_val_2)/2) + (abs(g_val_1 - g_val_2) * randn1p1)
+
+    if(crossover_val < 0):
+        crossover_val = default_val
 
     return crossover_val
 
 class BaseRobotConfig:
     def __init__(self):
         # Common parameters for all robots
-        self.robot_radius = 0.05 # For collision check
+        self.robot_radius = 0.1 # For collision check
         self.max_speed = 0.5 # [m/s]
         self.min_speed = -0.5  # [m/s]
         self.v_resolution = 0.075  # [m/s]
         self.dt = 0.5  # [s] Time tick for motion prediction
-        self.predict_time = 3 # [s]
+        self.predict_time = 1 # [s]
 
 class RobotGenome:
     
@@ -24,24 +27,24 @@ class RobotGenome:
         # Also used to check if goal is reached in both types
         self.to_goal_cost_gain = 2
         self.obstacle_cost_gain = 2
-        self.obstacle_sphere_of_influence = 0.8 # [m] for obstacle potential field
+        self.obstacle_sphere_of_influence = 0.2 # [m] for obstacle potential field
 
     def mutate(self, delta):
-        randn1p1 = 1 if random.random() <= 0.5 else -1
+        randn1p1 = 1 if random.random() < 0.5 else -1
         self.to_goal_cost_gain += self.to_goal_cost_gain * delta * randn1p1
         
-        randn1p1 = 1 if random.random() <= 0.5 else -1
+        randn1p1 = 1 if random.random() < 0.5 else -1
         self.obstacle_cost_gain += self.obstacle_cost_gain * delta * randn1p1
         
-        randn1p1 = 1 if random.random() <= 0.5 else -1
+        randn1p1 = 1 if random.random() < 0.5 else -1
         self.obstacle_sphere_of_influence += self.obstacle_sphere_of_influence * delta * randn1p1
     
     @staticmethod
     def create_random_genome():
         genome = RobotGenome()
-        genome.to_goal_cost_gain = random.randrange(1, 5)
-        genome.obstacle_cost_gain = random.randrange(1, 5)
-        genome.obstacle_sphere_of_influence = random.uniform(0, 1)
+        genome.to_goal_cost_gain = random.uniform(1, 10)
+        genome.obstacle_cost_gain = random.uniform(1, 10)
+        genome.obstacle_sphere_of_influence = random.uniform(0, 3)
         return genome
     
     @staticmethod
@@ -83,9 +86,9 @@ class Robot(BaseRobotConfig):
         self.distance_from_goal = 0
     
     @staticmethod
-    def create_robot(sx, sy):
+    def create_robot(start_pos):
         # initial state [x(m), y(m), v_x(m/s), v_y(m/s)]
-        state = np.array([sx, sy, 0, 0.0])
+        state = np.array([start_pos[0], start_pos[1], 0, 0.0])
         genome = RobotGenome.create_random_genome()
         return Robot(genome, state)
     

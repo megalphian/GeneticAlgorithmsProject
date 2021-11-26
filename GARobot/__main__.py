@@ -9,29 +9,40 @@ show_animation = False
 
 def main():
 
+    sx = 0
+    sy = 5
+
     # Define goal point
     gx=10.0 
     gy=5.0
+
+    # start position [x(m), y(m)]
+    start = np.array([sx, sy])
 
     # goal position [x(m), y(m)]
     goal = np.array([gx, gy])
     pop_size = 30
 
+    # Create a configuration file 
     config = GARobotConfig()
 
-    robots, env_config = garobot(pop_size, goal, config)
+    _, anim_ax = plt.subplots()
 
-    plt.cla()
-    plt.plot(goal[0], goal[1], "xb")
-    plot_obstacles(env_config.obs)
+    robots, env_config, gen_obj_vals = garobot(pop_size, start, goal, config, anim_ax, fixed=False)
+
+    _, final_ax = plt.subplots()
+
+    final_ax.cla()
+    final_ax.plot(goal[0], goal[1], "xb")
+    plot_obstacles(env_config.obs, final_ax)
     
-    plt.xlim(env_config.env_range)
-    plt.axis("equal")
-    plt.grid(True)
+    final_ax.set_xlim(env_config.env_range)
+    final_ax.axis("equal")
+    final_ax.grid(True)
 
     for robot in robots:
-        plt.plot(robot.state[0], robot.state[1], "xr")
-        plt.plot(robot.trajectory[:, 0], robot.trajectory[:, 1], "-r")
+        final_ax.plot(robot.state[0], robot.state[1], "xr")
+        final_ax.plot(robot.trajectory[:, 0], robot.trajectory[:, 1], "-r")
 
     plt.show()
 

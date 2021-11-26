@@ -1,13 +1,11 @@
 import numpy as np
 
-import matplotlib.pyplot as plt
-
 import math
-from plot_utils import plot_obstacles, plot_robot
+from plot_utils import animate
 
 import motion_planner as plan
 
-def run_generation(robots, goal, env_config, show_animation = False):
+def run_generation(robots, goal, env_config, anim_ax, show_animation):
     
     for robot in robots:
         robot.reset_robot_state()
@@ -34,25 +32,10 @@ def run_generation(robots, goal, env_config, show_animation = False):
                     robot.trajectory = np.vstack((robot.trajectory, robot.state))
 
                     dist_to_goal = math.hypot(robot.state[0] - goal[0], robot.state[1] - goal[1])
-                    robot.reached_goal = dist_to_goal <= 2*robot.robot_radius
+                    robot.reached_goal = dist_to_goal <= 2 * robot.robot_radius
         
         if show_animation:
-            plt.cla()
-            # for stopping simulation with the esc key.
-            plt.gcf().canvas.mpl_connect(
-                'key_release_event',
-                lambda event: [exit(0) if event.key == 'escape' else None])
-            plt.plot(goal[0], goal[1], "xb")
-            plot_obstacles(obs)
-
-            for robot in robots:
-                plt.plot(robot.state[0], robot.state[1], "xr")
-                plot_robot(robot.state[0], robot.state[1], robot.robot_radius)
-
-            plt.xlim(env_config.env_range)
-            plt.axis("equal")
-            plt.grid(True)
-            plt.pause(0.0001)
+            animate(anim_ax, env_config, goal, robots, obs)
         
         if(stopped_robots == len(robots)):
             print("Goal!!")
@@ -72,26 +55,9 @@ def run_generation(robots, goal, env_config, show_animation = False):
                 dist_from_goal = math.hypot(robot.state[0] - goal[0], robot.state[1] - goal[1])
                 robot.distance_from_goal += dist_from_goal
 
-    plt.cla()
-    plt.plot(goal[0], goal[1], "xb")
-    plot_obstacles(obs)
-    
-    plt.xlim(env_config.env_range)
-    plt.axis("equal")
-    plt.grid(True)
-
     reached_bots = 0
     for robot in robots:
         if(robot.trajectory_cost < float('inf')):
             reached_bots += 1
-    #     #     print('Goal gain: ', robot.genome.to_goal_cost_gain)
-    #     #     print('Obstacle gain: ', robot.genome.obstacle_cost_gain)
-    #     #     print('Obstacle Sphere of Influence: ', robot.genome.obstacle_sphere_of_influence)
-    #     #     print('Cost: ', robot.trajectory_cost)
-
-    #     plt.plot(robot.state[0], robot.state[1], "xr")
-    #     plt.plot(robot.trajectory[:, 0], robot.trajectory[:, 1], "-r")
 
     print('Robots reaching goal:', reached_bots)
-
-    print("Done")

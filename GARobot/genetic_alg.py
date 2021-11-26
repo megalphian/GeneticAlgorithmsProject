@@ -5,21 +5,19 @@ from controller import run_generation
 from env_config import EnvConfig
 from robot_factory import Robot, RobotGenome
 
-goal_dist_gain = 1000
-
 class RobotType:
     
     # Robot profiles and corresponding objective gains
-    # [Collision, Time, Distance]
-    SAFE = [100, 1, 1]
-    FAST = [10, 10, 1]
-    DIRECT = [10, 1, 10]
+    # [Collision, Time, Distance, Goal]
+    SAFE = [100, 1, 1, 1]
+    FAST = [10, 10, 1, 1]
+    DIRECT = [10, 1, 10, 100]
 
 class GARobotConfig:
     def __init__(self):
-        self.num_gens = 10
-        self.runs_per_gen = 1
-        self.robot_type_gains = RobotType.FAST
+        self.num_gens = 50
+        self.runs_per_gen = 3
+        self.robot_type_gains = RobotType.SAFE
 
 def evaluate(robots, robot_type_gains):
     robot_obj_lookup = dict()
@@ -30,7 +28,7 @@ def evaluate(robots, robot_type_gains):
         raw_objective = robot.no_collisions * robot_type_gains[0] + \
                             robot.time_steps * robot_type_gains[1] + \
                             robot.distance_travelled * robot_type_gains[2] + \
-                            robot.distance_from_goal * goal_dist_gain
+                            robot.distance_from_goal * robot_type_gains[3]
         robot_obj_lookup[robot] = raw_objective
         total_obj_val += raw_objective
         if(highest_obj_val < raw_objective):
@@ -98,26 +96,27 @@ def crossover(robots, pop_size):
 
 def mutate(robots):
     mutation_prob = 0.5
-    mutation_delta = 0.2
+    mutation_delta = 0.5
 
     for robot in robots:
-        if random.random() <= mutation_prob:
+        if random.random() < mutation_prob:
             robot.genome.mutate(mutation_delta)
 
-def garobot(pop_size, goal, config):
+def garobot(pop_size, start, goal, config, anim_ax, fixed=True, show_animation=False):
 
     # Build initial population
     robots = []
     gen_obj_vals = []
 
     for i in range(pop_size):
-        robots.append(Robot.create_robot(0, 5))
+        robots.append(Robot.create_robot(start))
 
     crossover_robots = robots
 
     # FIXED
     # Build environment with new obstacles
-    env_config = EnvConfig()
+    if(fixed):
+        env_config = EnvConfig()
 
     for i in range(config.num_gens):
         
@@ -127,12 +126,13 @@ def garobot(pop_size, goal, config):
         for j in range(config.runs_per_gen):
             print('Run',j+1)
 
-            # # VARIED
-            # # Build environment with new obstacles
-            # env_config = EnvConfig()
+            # VARIED
+            # Build environment with new obstacles
+            if(not(fixed)):
+                env_config = EnvConfig()
 
             # Run the motions for the generation
-            run_generation(robots, goal, env_config, show_animation=False)
+            run_generation(robots, goal, env_config, anim_ax, show_animation)
 
         # Evaluate the objective value of the population and record
         total_obj_val = evaluate(robots, config.robot_type_gains)
@@ -150,4 +150,4 @@ def garobot(pop_size, goal, config):
     
     print('GARobot done!')
 
-    return robots, env_config
+    return robots, env_config, gen_obj_vals
