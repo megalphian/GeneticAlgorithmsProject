@@ -34,7 +34,7 @@ def run_generation(robots, goal, env_config, anim_ax, show_animation):
                     dist_to_goal = math.hypot(robot.state[0] - goal[0], robot.state[1] - goal[1])
                     robot.reached_goal = dist_to_goal <= 0.2
         
-        if show_animation:
+        if show_animation and anim_ax is not None:
             animate(anim_ax, env_config, goal, robots, obs)
         
         if(stopped_robots == len(robots)):
