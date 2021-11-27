@@ -32,7 +32,7 @@ def run_generation(robots, goal, env_config, anim_ax, show_animation):
                     robot.trajectory = np.vstack((robot.trajectory, robot.state))
 
                     dist_to_goal = math.hypot(robot.state[0] - goal[0], robot.state[1] - goal[1])
-                    robot.reached_goal = dist_to_goal <= 2 * robot.robot_radius
+                    robot.reached_goal = dist_to_goal <= 0.2
         
         if show_animation:
             animate(anim_ax, env_config, goal, robots, obs)

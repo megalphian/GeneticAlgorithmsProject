@@ -22,7 +22,7 @@ def animate(anim_ax, env_config, goal, robots, obs):
         anim_ax.plot(robot.state[0], robot.state[1], "xr")
         plot_robot(robot.state[0], robot.state[1], robot.robot_radius, anim_ax)
 
-    anim_ax.set_xlim(env_config.env_range)
-    anim_ax.axis("equal")
+    anim_ax.set_xlim([env_config.env_range[0] - 0.2, env_config.env_range[1] + 0.2])
+    anim_ax.set_ylim([env_config.env_range[0] - 0.2, env_config.env_range[1] + 0.2])
     anim_ax.grid(True)
     plt.pause(0.0001)

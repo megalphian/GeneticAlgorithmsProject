@@ -5,7 +5,7 @@ def crossover_genome_values(g_val_1, g_val_2, default_val=0.1):
     randn1p1 = 1 if random.random() <= 0.5 else -1
     crossover_val = ((g_val_1 + g_val_2)/2) + (abs(g_val_1 - g_val_2) * randn1p1)
 
-    if(crossover_val < 0):
+    if(crossover_val < default_val):
         crossover_val = default_val
 
     return crossover_val
@@ -14,11 +14,11 @@ class BaseRobotConfig:
     def __init__(self):
         # Common parameters for all robots
         self.robot_radius = 0.1 # For collision check
-        self.max_speed = 0.5 # [m/s]
-        self.min_speed = -0.5  # [m/s]
+        self.max_speed = 0.45 # [m/s]
+        self.min_speed = -0.45  # [m/s]
         self.v_resolution = 0.075  # [m/s]
         self.dt = 0.5  # [s] Time tick for motion prediction
-        self.predict_time = 1 # [s]
+        self.predict_time = 1.5 # [s]
 
 class RobotGenome:
     
@@ -42,9 +42,9 @@ class RobotGenome:
     @staticmethod
     def create_random_genome():
         genome = RobotGenome()
-        genome.to_goal_cost_gain = random.uniform(0.1, 10)
-        genome.obstacle_cost_gain = random.uniform(0.1, 10)
-        genome.obstacle_sphere_of_influence = random.uniform(0, 1)
+        genome.to_goal_cost_gain = random.uniform(0.1, 1)
+        genome.obstacle_cost_gain = random.uniform(0.1, 1)
+        genome.obstacle_sphere_of_influence = random.uniform(0.1, 1)
         return genome
     
     @staticmethod
@@ -93,6 +93,6 @@ class Robot(BaseRobotConfig):
         return Robot(genome, state)
     
     def update_fitness_params(self, u, no_collisions):
-        self.distance_travelled += (np.sqrt(u[0]**2 + u[1]**2) / self.dt)
+        self.distance_travelled += (np.sqrt(u[0]**2 + u[1]**2) * self.dt)
         self.no_collisions += no_collisions
         self.time_steps += 1

@@ -25,15 +25,6 @@ def calc_dynamic_window(x, config):
     dw = [config.min_speed, config.max_speed,
           config.min_speed, config.max_speed]
 
-    # # Dynamic window from motion model
-    # Vd = [x[2] - config.max_accel * config.dt,
-    #       x[2] + config.max_accel * config.dt,
-    #       x[3] - config.max_accel * config.dt,
-    #       x[3] + config.max_accel * config.dt]
-
-    # dw = [max(Vs[0], Vd[0]), min(Vs[1], Vd[1]),
-    #       max(Vs[2], Vd[2]), min(Vs[3], Vd[3])]
-
     return dw
 
 def predict_trajectory(x_init, v_x, v_y, config):
@@ -103,7 +94,7 @@ def calc_obstacle_cost(trajectory, obs, config):
     max_obs_cost: collision
     Returns: (cost, collisions)
     """
-    max_obs_cost = float('inf')
+    max_obs_cost = 100000
     collisions = 0
     if(obs.size == 0):
         return (0, 0)
@@ -118,12 +109,13 @@ def calc_obstacle_cost(trajectory, obs, config):
     i = np.argmin(min_r) # Get the min distance of a trajectory from each obstacle
 
     cost = 0
+    influence_dist = (config.genome.obstacle_sphere_of_influence + config.robot_radius)
     if min_r[i] < config.robot_radius:
         cost = max_obs_cost # collision
         collisions = 100
-    elif(min_r[i] <= (config.genome.obstacle_sphere_of_influence + config.robot_radius)):
+    elif(min_r[i] <= influence_dist):
         collisions = 1
-        cost = config.genome.obstacle_cost_gain * 1/(min_r[i])
+        cost = config.genome.obstacle_cost_gain * (1/min_r[i] - 1/influence_dist)
     return (cost, collisions)
 
 def calc_to_goal_cost(trajectory, goal):

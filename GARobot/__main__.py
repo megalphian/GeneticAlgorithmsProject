@@ -26,7 +26,7 @@ def main():
     # Create a configuration file 
     config = GARobotConfig()
 
-    _, anim_ax = plt.subplots()
+    _, anim_ax = plt.subplots(figsize=(8,8))
 
     robots, env_config, gen_obj_vals = garobot(pop_size, start, goal, config, anim_ax, fixed=False)
 

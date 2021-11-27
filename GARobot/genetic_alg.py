@@ -9,15 +9,15 @@ class RobotType:
     
     # Robot profiles and corresponding objective gains
     # [Collision, Time, Distance, Goal]
-    SAFE = [100, 1, 1, 1]
-    FAST = [10, 10, 1, 1]
-    DIRECT = [10, 1, 10, 100]
+    SAFE = [100, 1, 1, 10]
+    FAST = [10, 100, 1, 10]
+    DIRECT = [10, 1, 10, 10]
 
 class GARobotConfig:
     def __init__(self):
         self.num_gens = 10
         self.runs_per_gen = 3
-        self.robot_type_gains = RobotType.SAFE
+        self.robot_type_gains = RobotType.DIRECT
 
 def evaluate(robots, robot_type_gains):
     robot_obj_lookup = dict()
