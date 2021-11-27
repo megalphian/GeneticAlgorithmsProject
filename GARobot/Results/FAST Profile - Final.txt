@@ -1,0 +1,112 @@
+❯ python GARobot
+Generation 1
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 4
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 0
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 3
+Gen Cost: 919079.7947110237
+Generation 2
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 18
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 3
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 11
+Gen Cost: 790717.339366946
+Generation 3
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 1
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 16
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 0
+Gen Cost: 859941.4000477174
+Generation 4
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 26
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 7
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 11
+Gen Cost: 731573.7885660664
+Generation 5
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 20
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 14
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 8
+Gen Cost: 742377.0235189253
+Generation 6
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 28
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 27
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 24
+Gen Cost: 570682.6012293459
+Generation 7
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 15
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 24
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 26
+Gen Cost: 636026.8433066647
+Generation 8
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 21
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 5
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 29
+Gen Cost: 682171.8438389312
+Generation 9
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 26
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 27
+Run 3
+Time Limit Exceeded
+Robots reaching goal: 26
+Gen Cost: 570494.0777949303
+Generation 10
+Run 1
+Time Limit Exceeded
+Robots reaching goal: 0
+Run 2
+Time Limit Exceeded
+Robots reaching goal: 28
+Run 3
+Goal!!
+Robots reaching goal: 30
+Gen Cost: 665370.6759077273
+GARobot done!
