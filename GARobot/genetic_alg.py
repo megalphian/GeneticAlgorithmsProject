@@ -4,7 +4,7 @@ import random
 from controller import run_generation
 from env_config import EnvConfig
 from robot_factory import Robot, RobotGenome
-from get_metrics import get_metrics
+from get_metrics import GARobotMetrics
 
 class RobotType:
     
@@ -110,13 +110,12 @@ def mutate(robots):
 
 def garobot(pop_size, start, goal, config, anim_ax, show_animation=False):
 
+    # Create object to record metrics
+    ga_metric = GARobotMetrics()
+
     # Build initial population
     robots = []
     gen_obj_vals = []
-
-    avg_collisions = []
-    avg_time_steps = []
-    avg_distance_travelled = []
 
     for i in range(pop_size):
         robots.append(Robot.create_robot(start))
@@ -128,11 +127,12 @@ def garobot(pop_size, start, goal, config, anim_ax, show_animation=False):
     if(config.fixed):
         env_config = EnvConfig(config.clutter_pct)
 
-    for i in range(config.num_gens):
+    for num_gen in range(config.num_gens):
         
         robots = crossover_robots
+        reached_bots = 0
 
-        print('Generation',i+1)
+        print('Generation',num_gen+1)
         for j in range(config.runs_per_gen):
             print('Run',j+1)
 
@@ -142,16 +142,13 @@ def garobot(pop_size, start, goal, config, anim_ax, show_animation=False):
                 env_config = EnvConfig(config.clutter_pct)
 
             # Run the motions for the generation
-            run_generation(robots, goal, env_config, anim_ax, show_animation)
+            reached_bots += run_generation(robots, goal, env_config, anim_ax, show_animation)
 
         # Evaluate the objective value of the population and record
         total_obj_val = evaluate(robots, config.robot_type_gains)
         gen_obj_vals.append(total_obj_val)
 
-        avg_c, avg_t, avg_d = get_metrics(robots, config.runs_per_gen)
-        avg_collisions.append(avg_c)
-        avg_time_steps.append(avg_t)
-        avg_distance_travelled.append(avg_d)
+        ga_metric.record_metrics(robots, reached_bots, num_gen, config.runs_per_gen)
 
         # Apply the GA parameters to the robots
         selected = reproduce(robots)
@@ -165,4 +162,4 @@ def garobot(pop_size, start, goal, config, anim_ax, show_animation=False):
     
     print('GARobot done!')
 
-    return robots, env_config, gen_obj_vals, (avg_collisions, avg_time_steps, avg_distance_travelled)
+    return robots, env_config, gen_obj_vals, ga_metric

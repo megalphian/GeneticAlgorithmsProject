@@ -60,4 +60,4 @@ def run_generation(robots, goal, env_config, anim_ax, show_animation):
         if(robot.trajectory_cost < float('inf')):
             reached_bots += 1
 
-    print('Robots reaching goal:', reached_bots)
+    return reached_bots
