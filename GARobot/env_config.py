@@ -1,6 +1,13 @@
+'''
+Code to configure the environment in which the robot population will operate.
+
+Author: Megnath Ramesh
+'''
+
 import numpy as np
 import random
 
+# Code to generate a random obstacle within the boundaries of the environment
 def generate_random_obstacle(env_range_x, env_range_y, min_rad, max_rad):
     x_pos = random.uniform(env_range_x[0] + max_rad, env_range_x[1] - max_rad)
     y_pos = random.uniform(env_range_y[0] + max_rad, env_range_y[1] - max_rad)
@@ -8,6 +15,7 @@ def generate_random_obstacle(env_range_x, env_range_y, min_rad, max_rad):
     area = np.pi * (rad ** 2)
     return ([x_pos, y_pos, rad], area)
 
+# Configuration of the environment and the contained obstacles
 class EnvConfig:
     def __init__(self, clutter_pct=15):
         self.env_range = [0, 10]

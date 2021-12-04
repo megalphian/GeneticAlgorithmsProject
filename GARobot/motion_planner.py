@@ -1,5 +1,5 @@
 """
-Mobile robot motion planning sample with Dynamic Window Approach
+Robot motion planning with Dynamic Window Approach
 
 Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
 Modified by Megnath Ramesh for ECE 750 Project
@@ -11,6 +11,9 @@ import numpy as np
 def dwa_control(x, config, goal, obs):
     """
     Dynamic Window Approach control
+    
+    Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
+    Modified by Megnath Ramesh for ECE 750 Project
     """
     dw = calc_dynamic_window(x, config)
 
@@ -19,6 +22,9 @@ def dwa_control(x, config, goal, obs):
 def calc_dynamic_window(x, config):
     """
     calculation dynamic window based on current state x
+
+    Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
+    Modified by Megnath Ramesh for ECE 750 Project
     """
 
     # Dynamic window from robot specification
@@ -30,6 +36,9 @@ def calc_dynamic_window(x, config):
 def predict_trajectory(x_init, v_x, v_y, config):
     """
     predict trajectory with an input
+    
+    Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
+    Modified by Megnath Ramesh for ECE 750 Project
     """
 
     x = np.array(x_init)
@@ -46,6 +55,9 @@ def predict_trajectory(x_init, v_x, v_y, config):
 def calc_control_and_trajectory(x, dw, config, goal, obs):
     """
     calculation final input with dynamic window
+
+    Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
+    Modified by Megnath Ramesh for ECE 750 Project
     """
 
     x_init = x[:]
@@ -58,8 +70,9 @@ def calc_control_and_trajectory(x, dw, config, goal, obs):
     for v_x in np.arange(dw[0], dw[1], config.v_resolution):
         for v_y in np.arange(dw[2], dw[3], config.v_resolution):
 
+            # predict a trajectory in the dynamic window
             trajectory = predict_trajectory(x_init, v_x, v_y, config)
-            # calc cost
+            # calculate cost
             to_goal_cost = config.genome.to_goal_cost_gain * calc_to_goal_cost(trajectory, goal)
             ob_cost, collisions = calc_obstacle_cost(trajectory, obs, config)
 
@@ -71,14 +84,15 @@ def calc_control_and_trajectory(x, dw, config, goal, obs):
                 best_u = [v_x, v_y]
                 best_trajectory = trajectory
                 min_collisions = collisions
-    
-    # Megnath: See if there is a way to overcome any local minima
 
     return best_u, best_trajectory, min_cost, min_collisions
 
 def motion(x, u, dt):
     """
     motion model
+
+    Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
+    Modified by Megnath Ramesh for ECE 750 Project
     """
 
     x[0] += u[0] * dt
@@ -91,8 +105,11 @@ def motion(x, u, dt):
 def calc_obstacle_cost(trajectory, obs, config):
     """
     calc obstacle cost 
-    max_obs_cost: collision
-    Returns: (cost, collisions)
+    max_obs_cost: collision with an obstacle
+    Returns: (cost, no. of collisions)
+
+    Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
+    Modified by Megnath Ramesh for ECE 750 Project
     """
     max_obs_cost = 100000
     collisions = 0
@@ -120,7 +137,10 @@ def calc_obstacle_cost(trajectory, obs, config):
 
 def calc_to_goal_cost(trajectory, goal):
     """
-    calc to goal cost with angle difference
+    calc cost to go to goal from current position
+
+    Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
+    Modified by Megnath Ramesh for ECE 750 Project
     """
 
     dx = goal[0] - trajectory[-1, 0]
