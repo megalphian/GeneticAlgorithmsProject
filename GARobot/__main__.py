@@ -27,6 +27,7 @@ def main():
 
     # Create a configuration file for GAROBOT
     # Shown is an example configuration of the robot
+    # Arguments: number of generations, number of runs per generation, is fixed, robot type, clutter percent
     ga_config = GARobotConfig(10, 1, fixed=True, robot_type_gains=RobotType.REACH, clutter_pct=15)
 
     # Determine whether to show animation or not

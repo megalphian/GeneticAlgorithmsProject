@@ -1,9 +1,10 @@
 """
 Robot motion planning with Dynamic Window Approach
 
+Original Source: https://github.com/AtsushiSakai/PythonRobotics/blob/master/PathPlanning/DynamicWindowApproach/dynamic_window_approach.py
+
 Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
 Modified by Megnath Ramesh for ECE 750 Project
-
 """
 
 import numpy as np
