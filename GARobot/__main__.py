@@ -10,8 +10,6 @@ import matplotlib.pyplot as plt
 from genetic_alg import garobot, GARobotConfig, RobotType
 from plot_utils import plot_final_results
 
-show_animation = False
-
 def main():
 
     # Define start point
@@ -28,10 +26,11 @@ def main():
     pop_size = 30
 
     # Create a configuration file for GAROBOT
-    ga_config = GARobotConfig(50, 3, fixed=False, robot_type_gains=RobotType.FAST, clutter_pct=15)
+    # Shown is an example configuration of the robot
+    ga_config = GARobotConfig(10, 1, fixed=True, robot_type_gains=RobotType.REACH, clutter_pct=15)
 
     # Determine whether to show animation or not
-    show_animation = False
+    show_animation = True
 
     if(show_animation):
         # Create a plotting axis for animation

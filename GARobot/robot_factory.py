@@ -105,7 +105,7 @@ class Robot(BaseRobotConfig):
     @staticmethod
     def create_robot(start_pos):
         # initial state [x(m), y(m), v_x(m/s), v_y(m/s)]
-        state = np.array([start_pos[0], start_pos[1], 0, 0])
+        state = np.array([start_pos[0], start_pos[1], 0.0, 0.0])
         genome = RobotGenome.create_random_genome()
         return Robot(genome, state)
     

@@ -89,7 +89,7 @@ def calc_control_and_trajectory(x, dw, config, goal, obs):
 
 def motion(x, u, dt):
     """
-    motion model
+    Robot Motion Model
 
     Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
     Modified by Megnath Ramesh for ECE 750 Project
