@@ -22,12 +22,13 @@ def crossover_genome_values(g_val_1, g_val_2, min_val=0.1):
 class BaseRobotConfig:
     def __init__(self):
         # Common parameters for all robots
-        self.robot_radius = 0.1 # For collision check
-        self.max_speed = 0.45 # [m/s]
-        self.min_speed = -0.45  # [m/s]
-        self.v_resolution = 0.075  # [m/s]
-        self.dt = 0.5  # [s] Time tick for motion prediction
-        self.predict_time = 1.5 # [s]
+        # Helps determine dynamic window
+        self.robot_radius = 0.1 # Radius occupied by the robot
+        self.max_speed = 0.45 # Maximum speed of the robot
+        self.min_speed = -0.45 # Minimum speed of the robot
+        self.v_resolution = 0.075 # Sampling resolution for robot's speed in window
+        self.dt = 0.5  # Sampling time interval
+        self.predict_time = 1.5 # Time to predict the future trajectory
 
 # Class to define the robot's genome
 class RobotGenome:
@@ -104,7 +105,7 @@ class Robot(BaseRobotConfig):
     # Method to create a robot with a random genome configuration
     @staticmethod
     def create_robot(start_pos):
-        # initial state [x(m), y(m), v_x(m/s), v_y(m/s)]
+        # Robot's initial state [x, y, vel_x, vel_y]
         state = np.array([start_pos[0], start_pos[1], 0.0, 0.0])
         genome = RobotGenome.create_random_genome()
         return Robot(genome, state)

@@ -11,7 +11,7 @@ import numpy as np
 
 def dwa_control(x, config, goal, obs):
     """
-    Dynamic Window Approach control
+    Control for Dynamic Window Approach
     
     Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
     Modified by Megnath Ramesh for ECE 750 Project
@@ -28,7 +28,7 @@ def dwa_control(x, config, goal, obs):
 
 def predict_trajectory(x_init, v_x, v_y, config):
     """
-    predict trajectory with an input
+    Predict trajectory with the given velocity inputs
     
     Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
     Modified by Megnath Ramesh for ECE 750 Project
@@ -50,7 +50,7 @@ def predict_trajectory(x_init, v_x, v_y, config):
 
 def calc_control_and_trajectory(x, dw, config, goal, obs):
     """
-    calculation final input with dynamic window
+    Calculate the final control input and trajectory given the dynamic window
 
     Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
     Modified by Megnath Ramesh for ECE 750 Project
@@ -67,16 +67,16 @@ def calc_control_and_trajectory(x, dw, config, goal, obs):
         for v_y in np.arange(dw[2], dw[3], config.v_resolution):
 
             ### Modifications by Megnath Ramesh
-            # predict a trajectory in the dynamic window
+            # Predict trajectory in the dynamic window given the inputs
             trajectory = predict_trajectory(x_init, v_x, v_y, config)
-            # calculate cost
+            # Calculate the cost of the trajectory
             to_goal_cost = config.genome.to_goal_cost_gain * calc_to_goal_cost(trajectory, goal)
             ob_cost, collisions = calc_obstacle_cost(trajectory, obs, config)
 
             final_cost = to_goal_cost + ob_cost
             ### End of modifications
 
-            # search minimum trajectory
+            # If the trajectory has the minimum cost, store and return later
             if min_cost >= final_cost:
                 min_cost = final_cost
                 best_u = [v_x, v_y]
@@ -105,9 +105,8 @@ def motion(x, u, dt):
 
 def calc_obstacle_cost(trajectory, obs, config):
     """
-    calc obstacle cost 
-    max_obs_cost: collision with an obstacle
-    Returns: (cost, no. of collisions)
+    Calculate the trajectory cost in the presence of obstacles in the environment.
+    Also record the number of collisions in the trajectory.
 
     Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
     Modified by Megnath Ramesh for ECE 750 Project
@@ -135,10 +134,12 @@ def calc_obstacle_cost(trajectory, obs, config):
     i = np.argmin(min_r) # Get the min distance of a trajectory from each obstacle
 
     ### Modifications by Megnath Ramesh
+    # Compute the highest cost due to obstacles in the trajectory predicted
     cost = 0
     influence_dist = (config.genome.obstacle_sphere_of_influence + config.robot_radius)
+    # If the robot has collided with an obstacle, penalize the trajectory heavily.
     if min_r[i] < config.robot_radius:
-        cost = max_obs_cost # collision
+        cost = max_obs_cost
         collisions = 100
     elif(min_r[i] <= influence_dist):
         collisions = 1
@@ -149,7 +150,7 @@ def calc_obstacle_cost(trajectory, obs, config):
 
 def calc_to_goal_cost(trajectory, goal):
     """
-    calc cost to go to goal from current position
+    Calculate the cost to go to the goal from the current position.
 
     Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
     Modified by Megnath Ramesh for ECE 750 Project

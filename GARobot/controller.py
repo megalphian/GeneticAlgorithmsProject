@@ -37,7 +37,7 @@ def run_generation(robots, goal, env_config, anim_ax, show_animation):
                     stopped_robots += 1
                 else:
                     # If robot is not at the goal, try to find a new trajectory for the robot
-                    u, predicted_trajectory, cost, no_collisions = plan.dwa_control(robot.state, robot, goal, obs)
+                    u, _, cost, no_collisions = plan.dwa_control(robot.state, robot, goal, obs)
                     robot.trajectory_cost += cost
                     robot.state = plan.motion(robot.state, u, robot.dt)
 
