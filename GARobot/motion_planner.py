@@ -16,23 +16,15 @@ def dwa_control(x, config, goal, obs):
     Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
     Modified by Megnath Ramesh for ECE 750 Project
     """
-    dw = calc_dynamic_window(x, config)
-
-    return calc_control_and_trajectory(x, dw, config, goal, obs)
-
-def calc_dynamic_window(x, config):
-    """
-    calculation dynamic window based on current state x
-
-    Authors: Atsushi Sakai (@Atsushi_twi), Göktuğ Karakaşlı
-    Modified by Megnath Ramesh for ECE 750 Project
-    """
-
+   
     # Dynamic window from robot specification
+    
+    ### Modifications by Megnath Ramesh
     dw = [config.min_speed, config.max_speed,
           config.min_speed, config.max_speed]
+    ### End of modifications
 
-    return dw
+    return calc_control_and_trajectory(x, dw, config, goal, obs)
 
 def predict_trajectory(x_init, v_x, v_y, config):
     """
@@ -46,12 +38,15 @@ def predict_trajectory(x_init, v_x, v_y, config):
     trajectory = np.array(x)
     time = 0
     while time <= config.predict_time:
+        
+        ### Modifications by Megnath Ramesh
         x = motion(x, [v_x, v_y], config.dt)
+        ### End of modifications
+        
         trajectory = np.vstack((trajectory, x))
         time += config.dt
 
     return trajectory
-
 
 def calc_control_and_trajectory(x, dw, config, goal, obs):
     """
@@ -71,6 +66,7 @@ def calc_control_and_trajectory(x, dw, config, goal, obs):
     for v_x in np.arange(dw[0], dw[1], config.v_resolution):
         for v_y in np.arange(dw[2], dw[3], config.v_resolution):
 
+            ### Modifications by Megnath Ramesh
             # predict a trajectory in the dynamic window
             trajectory = predict_trajectory(x_init, v_x, v_y, config)
             # calculate cost
@@ -78,6 +74,7 @@ def calc_control_and_trajectory(x, dw, config, goal, obs):
             ob_cost, collisions = calc_obstacle_cost(trajectory, obs, config)
 
             final_cost = to_goal_cost + ob_cost
+            ### End of modifications
 
             # search minimum trajectory
             if min_cost >= final_cost:
@@ -96,8 +93,11 @@ def motion(x, u, dt):
     Modified by Megnath Ramesh for ECE 750 Project
     """
 
+    ### Modifications by Megnath Ramesh
     x[0] += u[0] * dt
     x[1] += u[1] * dt
+    ### End of modifications
+
     x[2] = u[0]
     x[3] = u[1]
 
@@ -119,13 +119,22 @@ def calc_obstacle_cost(trajectory, obs, config):
     
     ox = obs[:, 0]
     oy = obs[:, 1]
+    
+    ### Modifications by Megnath Ramesh
     o_radius = obs[:, 2]
+    ### End of modifications
+
     dx = trajectory[:, 0] - ox[:, None]
     dy = trajectory[:, 1] - oy[:, None]
+
+    ### Modifications by Megnath Ramesh
     r = np.asarray(np.hypot(dx, dy)) - o_radius[:, None]
+    ### End of modifications
+
     min_r = np.min(r, axis=1)
     i = np.argmin(min_r) # Get the min distance of a trajectory from each obstacle
 
+    ### Modifications by Megnath Ramesh
     cost = 0
     influence_dist = (config.genome.obstacle_sphere_of_influence + config.robot_radius)
     if min_r[i] < config.robot_radius:
@@ -134,6 +143,8 @@ def calc_obstacle_cost(trajectory, obs, config):
     elif(min_r[i] <= influence_dist):
         collisions = 1
         cost = config.genome.obstacle_cost_gain * (1/min_r[i] - 1/influence_dist)
+    ### End of modifications
+
     return (cost, collisions)
 
 def calc_to_goal_cost(trajectory, goal):
@@ -146,5 +157,9 @@ def calc_to_goal_cost(trajectory, goal):
 
     dx = goal[0] - trajectory[-1, 0]
     dy = goal[1] - trajectory[-1, 1]
+
+    ### Modifications by Megnath Ramesh
     cost = np.sqrt(dx**2 + dy**2)
+    ### End of modifications
+    
     return cost
